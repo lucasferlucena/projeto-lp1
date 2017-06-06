@@ -6,6 +6,7 @@
 #include "stdlib.h"
 #include <time.h>
 #include "tv.h"
+#include <fstream>
 
 #define TIME 10
 
@@ -14,6 +15,8 @@ using namespace cv;
 
 int main()
 {
+	ofstream file;
+
 	Tv t(0,0);
 
 	int f = 0;	
@@ -118,7 +121,8 @@ int main()
 							cvDrawContours(src,defects,CV_RGB(0,0,0),CV_RGB(255,0,0),-1,CV_FILLED,8);
 						}
 					}
-			
+					
+
 					char txt[40]="";
 					int tempo = clock();
 
@@ -127,8 +131,11 @@ int main()
 						//while(clock() - tempo < 2000)
 						{
 							char txt1[30];
-							if(f==TIME)
+							if(f==TIME){
+								file.open("tv.txt");
 								t.aumentarCanal();
+								file << con;
+							}
 							sprintf(txt1, "Aumentando Canal: %d", t.getCanal());
 							strcat(txt,txt1);
 						}
@@ -138,8 +145,11 @@ int main()
 						//while(clock() - tempo < 2000)
 						{
 							char txt1[30];
-							if(f==TIME)
+							if(f==TIME){
+								file.open("tv.txt");
 								t.diminuirCanal();
+								file << con;
+							}
 							sprintf(txt1, "Diminuindo Canal: %d", t.getCanal());
 							strcat(txt,txt1);
 						}
@@ -149,8 +159,11 @@ int main()
 						//while(clock() - tempo < 2000)
 						{
 							char txt1[30];
-							if(f==TIME)
+							if(f==TIME){
+								file.open("tv.txt");
 								t.aumentarVolume();
+								file << con;
+							}
 							sprintf(txt1, "Aumentando Volume: %d", t.getVolume());
 							strcat(txt,txt1);
 						}
@@ -160,8 +173,11 @@ int main()
 						//while(clock() - tempo < 2000)
 						{
 							char txt1[30];
-							if(f==TIME)
+							if(f==TIME){
+								file.open("tv.txt");
 								t.diminuirVolume();
+								file << con;
+							}
 							sprintf(txt1, "Diminuindo Volume: %d", t.getVolume());
 							strcat(txt,txt1);
 						}
@@ -169,18 +185,23 @@ int main()
 					else
 					{
 						char txt1[]="Aguardando Comando";
+						if(f==TIME){
+							file.open("tv.txt");
+							file << con;
+						}
 						strcat(txt,txt1);
 					}
 					cvNamedWindow( "contour",1);cvShowImage( "contour",src);
 					cvResetImageROI(src);
 					CvFont font;
 					cvInitFont(&font, CV_FONT_HERSHEY_SIMPLEX, 1.5, 1.5, 0, 5, CV_AA);
-					cvPutText(src, txt, cvPoint(50, 50), &font, cvScalar(0, 0, 255, 0)); 
+					//cvPutText(src, txt, cvPoint(50, 50), &font, cvScalar(0, 0, 255, 0)); 
 				     
 					free(defectArray);  
 					f++;
 					if(f > TIME + 1)
 						f = 0;
+					file.close();
 				} 
 				cvReleaseMemStorage( &storage1 );
 				cvReleaseMemStorage( &storage2 );
